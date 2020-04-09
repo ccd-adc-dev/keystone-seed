@@ -1,5 +1,13 @@
 const fs = require('fs');
-const createReadStream = fs.createReadStream;
+const { Readable } = require('stream');
+
+function bufferToStream(buffer) {
+  const newStream = new Readable();
+  newStream.push(buffer);
+  newStream.push(null);
+  return newStream;
+}
+
 const crypto = require('crypto');
 const randomString = () => crypto.randomBytes(6).hexSlice();
 
@@ -21,9 +29,17 @@ const createMediaItems = async keystone => {
 
   if (mediaItemsCount === 0) {
     const name = randomString();
-    const file = createReadStream('/home/furenku/Desktop/image-placeholder.jpg');
-    // const file = await fs.readFileSync('/home/furenku/Desktop/image-placeholder.jpg');
 
+    filename = "test.jpg"
+    fileType = filename.split('.')[1]
+    encodingRead = "utf8"
+    encoding = "7bit"
+    mimetype = fileType == 'png' ? 'image/png' : 'image/jpeg'
+    const buffer = Buffer(await fs.readFileSync(filename))
+
+    const file = { createReadStream: () => bufferToStream(buffer), filename, mimetype, encoding }
+    // const file = await fs.readFileSync('/home/furenku/Desktop/image-placeholder.jpg');
+    console.log(file)
 
     const response = await keystone.executeQuery(
       `mutation initialMediaItem($name: String, $file: Upload) {
@@ -39,7 +55,7 @@ const createMediaItems = async keystone => {
       }
     );
 
-    console.log("response:",file,response);
+    console.log("response:",response);
   }
 }
 
