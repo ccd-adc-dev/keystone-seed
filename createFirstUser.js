@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 const crypto = require('crypto');
 const randomString = () => crypto.randomBytes(6).hexSlice();
 
-module.exports = async keystone => {
-  // Count existing users
+const createFirstUser = async (keystone) => {
   const {
     data: {
       _allUsersMeta: { count },
@@ -35,20 +33,12 @@ module.exports = async keystone => {
     );
 
     console.log(`
-
-User created:
-  email: ${email}
-  password: ${password}
-Please change these details after initial login.
-`);
+      User created:
+        email: ${email}
+        password: ${password}
+      Please change these details after initial login.
+    `);
   }
-=======
-const createFirstUser = require('./createFirstUser')
-const seed = require('./seed')
+}
 
-module.exports = async keystone => {
-  // Count existing users
-  await createFirstUser(keystone)
-  await seed(keystone)
->>>>>>> e1cf4a276724741fa076359c3a3ab72d3b212784
-};
+module.exports = createFirstUser
