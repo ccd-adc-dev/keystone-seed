@@ -22,6 +22,7 @@
     "@keystonejs/app-graphql": "^5.1.5",
     "@keystonejs/app-static": "^5.1.2",
     "@keystonejs/auth-password": "^5.1.5",
+    "@keystonejs/field-content": "^5.4.5",
     "@keystonejs/fields": "^9.0.0",
     "@keystonejs/file-adapters": "^6.0.1",
     "@keystonejs/keystone": "^8.0.0",

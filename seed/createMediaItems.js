@@ -39,11 +39,15 @@ const createMediaItems = async keystone => {
 
     const file = { createReadStream: () => bufferToStream(buffer), filename, mimetype, encoding }
     // const file = await fs.readFileSync('/home/furenku/Desktop/image-placeholder.jpg');
-    console.log(file)
 
+    const content = {
+      create: {
+        document: "{\"object\":\"document\",\"data\":{},\"nodes\":[{\"object\":\"block\",\"type\":\"heading\",\"data\":{},\"nodes\":[{\"object\":\"text\",\"text\":\"asdasd\",\"marks\":[]}]},{\"object\":\"block\",\"type\":\"blockquote\",\"data\":{},\"nodes\":[{\"object\":\"block\",\"type\":\"paragraph\",\"data\":{},\"nodes\":[{\"object\":\"text\",\"text\":\"ASdasdasd\",\"marks\":[]}]}]},{\"object\":\"block\",\"type\":\"paragraph\",\"data\":{},\"nodes\":[{\"object\":\"text\",\"text\":\"\",\"marks\":[]}]}]}"
+      }
+    }
     const response = await keystone.executeQuery(
-      `mutation initialMediaItem($name: String, $file: Upload) {
-            createMediaItem(data: {name: $name, file: $file}) {
+      `mutation initialMediaItem($name: String, $file: Upload, $content: _ContentTypeMediaItemContentRelateToOneInput) {
+            createMediaItem(data: {name: $name, file: $file, content:$content}) {
               id
             }
           }`,
@@ -51,6 +55,7 @@ const createMediaItems = async keystone => {
         variables: {
           name,
           file,
+          content,
         },
       }
     );
