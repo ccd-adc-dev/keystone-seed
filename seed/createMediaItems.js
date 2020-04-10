@@ -28,39 +28,68 @@ const createMediaItems = async keystone => {
   
 
   if (mediaItemsCount === 0) {
-    const name = randomString();
 
-    filename = "test.jpg"
-    fileType = filename.split('.')[1]
-    encodingRead = "utf8"
-    encoding = "7bit"
-    mimetype = fileType == 'png' ? 'image/png' : 'image/jpeg'
-    const buffer = Buffer(await fs.readFileSync(filename))
 
-    const file = { createReadStream: () => bufferToStream(buffer), filename, mimetype, encoding }
-    // const file = await fs.readFileSync('/home/furenku/Desktop/image-placeholder.jpg');
-
-    const content = {
-      create: {
-        document: "{\"object\":\"document\",\"data\":{},\"nodes\":[{\"object\":\"block\",\"type\":\"heading\",\"data\":{},\"nodes\":[{\"object\":\"text\",\"text\":\"asdasd\",\"marks\":[]}]},{\"object\":\"block\",\"type\":\"blockquote\",\"data\":{},\"nodes\":[{\"object\":\"block\",\"type\":\"paragraph\",\"data\":{},\"nodes\":[{\"object\":\"text\",\"text\":\"ASdasdasd\",\"marks\":[]}]}]},{\"object\":\"block\",\"type\":\"paragraph\",\"data\":{},\"nodes\":[{\"object\":\"text\",\"text\":\"\",\"marks\":[]}]}]}"
-      }
-    }
-    const response = await keystone.executeQuery(
-      `mutation initialMediaItem($name: String, $file: Upload, $content: _ContentTypeMediaItemContentRelateToOneInput) {
-            createMediaItem(data: {name: $name, file: $file, content:$content}) {
-              id
-            }
-          }`,
+    const archivos = [
       {
-        variables: {
-          name,
-          file,
-          content,
-        },
-      }
-    );
+        nombre: "Archivo 1",
+        archivo: "test-1.jpg",
+      },
+      {
+        nombre: "Archivo 2",
+        archivo: "test-2.jpg",
+      },
+      {
+        nombre: "Archivo 3",
+        archivo: "test-3.jpg",
+      },
+      {
+        nombre: "Archivo 4",
+        archivo: "test-4.jpg",
+      },
+    ]
 
-    console.log("response:",response);
+    
+
+    archivos.forEach(async a=>{
+      
+      const name = a.nombre;
+      const filename = a.archivo;
+      
+      const fileType = filename.split('.')[1]
+      const encodingRead = "utf8"
+      const encoding = "7bit"
+      const mimetype = fileType == 'png' ? 'image/png' : 'image/jpeg'
+      const fileRead = await fs.readFileSync(filename)
+      const buffer = Buffer(fileRead)
+  
+      const file = { createReadStream: () => bufferToStream(buffer), filename, mimetype, encoding }
+      // const file = await fs.readFileSync('/home/furenku/Desktop/image-placeholder.jpg');
+  
+      const content = {
+        create: {
+          document: "{\"object\":\"document\",\"data\":{},\"nodes\":[{\"object\":\"block\",\"type\":\"heading\",\"data\":{},\"nodes\":[{\"object\":\"text\",\"text\":\"asdasd\",\"marks\":[]}]},{\"object\":\"block\",\"type\":\"blockquote\",\"data\":{},\"nodes\":[{\"object\":\"block\",\"type\":\"paragraph\",\"data\":{},\"nodes\":[{\"object\":\"text\",\"text\":\"ASdasdasd\",\"marks\":[]}]}]},{\"object\":\"block\",\"type\":\"paragraph\",\"data\":{},\"nodes\":[{\"object\":\"text\",\"text\":\"\",\"marks\":[]}]}]}"
+        }
+      }
+      
+      await keystone.executeQuery(
+        `mutation initialMediaItem($name: String, $file: Upload, $content: _ContentTypeMediaItemContentRelateToOneInput) {
+              createMediaItem(data: {name: $name, file: $file, content:$content}) {
+                id
+              }
+            }`,
+        {
+          variables: {
+            name,
+            file,
+            content,
+          },
+        }
+      );
+  
+    })
+
+
   }
 }
 
